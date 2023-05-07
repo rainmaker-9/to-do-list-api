@@ -9,12 +9,7 @@ export default (state = initialState, action) => {
     case ACTIONS.ADD_TO_LIST:
       return {
         ...state,
-        items: [
-          ...state.items,
-          {
-            value: action.payload,
-          },
-        ],
+        items: [...state.items, action.payload],
       };
     case ACTIONS.ADD_ALL_TO_LIST:
       return {
