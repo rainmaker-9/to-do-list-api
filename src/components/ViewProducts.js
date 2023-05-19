@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { actionCreators } from "../store/actions";
+import Product from "./Product";
+import { Link } from "react-router-dom";
 
 export default function ViewProducts() {
   const products_endpoint = `${process.env.REACT_APP_API_HOST_BASE_URL}/products`;
@@ -15,62 +17,36 @@ export default function ViewProducts() {
 
   useEffect(() => {
     fetchProducts().then((result) => {
-      dispatch(actionCreators.addAllToList(result.products));
+      if (products.length === 0) {
+        dispatch(actionCreators.addAllToList(result.products));
+      }
     });
   }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    let fd = new FormData(e.target);
-    let currentId = products[products.length - 1].id;
-    let prod = {
-      id: ++currentId,
-      title: fd.get("title"),
-      description: fd.get("description"),
-      price: fd.get("price"),
-      thumbnail: fd.get("thumbnail"),
-    };
-    dispatch(actionCreators.addToList(prod));
-  };
-
   return (
-    <div>
-      {products.length === 0 && <h3>Loading...</h3>}
+    <div className="container py-3">
+      {products.length === 0 && <h1 className="text-center">Loading...</h1>}
       {products.length > 0 && (
-        <div>
-          <h1>Products</h1>
-          <ul>
-            {products.map((product) => {
-              return <li key={product.id}>{product.title}</li>;
-            })}
-          </ul>
-          <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              name="title"
-              placeholder="Product Title"
-              required
-            />
-            <textarea
-              name="description"
-              placeholder="Product Description"
-              rows="5"
-              required
-            ></textarea>
-            <input
-              type="text"
-              name="price"
-              placeholder="Product Price"
-              required
-            />
-            <input
-              type="url"
-              name="thumbnail"
-              placeholder="Product Thumbnail"
-              required
-            />
-            <button>Save</button>
-          </form>
+        <div className="row g-3">
+          <div className="col-12 d-flex justify-content-between align-items-center">
+            <h1 className="text-center">Products</h1>
+            <Link to="/products/add" className="btn btn-success">
+              Add Product
+            </Link>
+          </div>
+          {products.length > 0 && (
+            <div className="col-12">
+              <div className="row g-4">
+                {products.map((product) => {
+                  return (
+                    <div className="col-md-4" key={product.id}>
+                      <Product product={product} />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
