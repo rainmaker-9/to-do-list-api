@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { actionCreators } from "../store/actions";
 
 export default function ViewProducts() {
   const products_endpoint = `${process.env.REACT_APP_API_HOST_BASE_URL}/products`;
-  const [products, setProducts] = useState([]);
+  const products = useSelector((state) => state.items);
   const dispatch = useDispatch();
 
   const fetchProducts = async () => {
@@ -15,7 +15,6 @@ export default function ViewProducts() {
 
   useEffect(() => {
     fetchProducts().then((result) => {
-      setProducts(result.products);
       dispatch(actionCreators.addAllToList(result.products));
     });
   }, []);
