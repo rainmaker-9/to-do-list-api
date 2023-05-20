@@ -1,23 +1,24 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { actionCreators } from "../store/actions";
+import { useNavigate } from "react-router-dom";
 
 export default function AddProduct() {
   const dispatch = useDispatch();
-  const prods = useSelector((state) => state.items);
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     let fd = new FormData(e.target);
-    let currentId = prods[prods.length - 1].id;
     let prod = {
-      id: ++currentId,
+      id: "",
       title: fd.get("title"),
       description: fd.get("description"),
       price: fd.get("price"),
       thumbnail: fd.get("thumbnail"),
     };
     dispatch(actionCreators.addToList(prod));
+    navigate("/products");
   };
 
   return (
